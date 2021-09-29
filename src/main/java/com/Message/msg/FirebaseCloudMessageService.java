@@ -5,6 +5,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.TopicManagementResponse;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -27,14 +28,17 @@ public class FirebaseCloudMessageService {
 
     }
 
-    public void sendToTopic(String forum,String topic,String title, ArrayList<String> subs) throws FirebaseMessagingException {
+    public void sendToTopic(String forum,String topic,String title, List<String> subs) throws FirebaseMessagingException {
 
         Integer size = subs.size();
         System.out.println(size);
         System.out.println(subs);
+
         if(subs.size()!=0) {
-            FirebaseMessaging.getInstance().subscribeToTopic(subs, topic);
-            System.out.println(subs);
+            TopicManagementResponse subsresponse = FirebaseMessaging.getInstance().subscribeToTopic(subs, topic);
+            System.out.println(subsresponse.getSuccessCount()+" tokens were subscribe successfully\n");
+            System.out.println(subsresponse.getErrors());
+
             Message message = Message.builder()
                     .putData("title", title)
                     .putData("body", "새 댓글이 달렸습니다.")
@@ -48,7 +52,10 @@ public class FirebaseCloudMessageService {
             // Response is a message ID string.
             System.out.println("Successfully sent message: " + response);
             // [END send_to_topic]
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(subs, topic);
+           subsresponse =  FirebaseMessaging.getInstance().unsubscribeFromTopic(subs, topic);
+            System.out.println(subsresponse.getSuccessCount()+"tokens were unsubscribe successfully\n");
+
+            System.out.println(subs);
         }
     }
 

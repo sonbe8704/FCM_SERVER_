@@ -74,22 +74,22 @@ public class MsgApplication {
 				int size=  msgs.size();
 				if(size!=0) {
 					Msg msg = msgs.get(size-1);
-
-
 					String who = msg.getWho();
 					String post_id = msg.getPost_id();
 					String forum_sort = msg.getForum();
-
-					ArrayList<String> subs = null;
+					List<String> subs = null;
 					try {
-						subs = (ArrayList<String>) db.collection(forum_sort).document(post_id).get().get().get("subscriber");
+						subs = (List<String>) db.collection(forum_sort).document(post_id).get().get().get("subscriber");
+						System.out.println(subs);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} catch (ExecutionException e) {
 						e.printStackTrace();
 					}
+
 					subs.remove(who);
-					System.out.println("delete");
+					System.out.println("delete\n"+subs);
+
 
 					String title = null;
 					try {
